@@ -51,7 +51,7 @@ public class GEDParser
 
             //------error: incompatible types: string[] cannot be conv to string
             if(splitStr[0] == "0"){
-                Level0(splitStr);
+                Level0(splitStr[0]);
             }
 
         }
@@ -63,8 +63,36 @@ public class GEDParser
 
         if(isZeroTag){
             System.out.println("Correct");
-        }
+        }   
+    }
 
-        
+    public static void Level1(String str){
+        String[] words = str.split(" ");
+
+        boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
+
+        if(isZeroTag){
+            System.out.println("Correct");
+        }   
+    }
+
+    public static void Level2(String str){
+        String[] words = str.split(" ");
+
+        boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
+
+        if(isZeroTag){
+            System.out.println("Correct");
+        }   
+    }
+
+    public static void InvalidLevel(String str){
+        String[] words = str.split(" ");
+
+        boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
+
+        if(isZeroTag){
+            System.out.println("Correct");
+        }   
     }
 }
