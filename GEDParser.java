@@ -54,7 +54,9 @@ public class GEDParser
 
             //Check which level and use appropriate method
             //Switch to cases later to prettify? 
+            System.out.println("Current level: " + currLevel);
             if (currLevel == "0") {
+                System.out.println("Entering Level0 method");
                 Level0(str);
             } else if(currLevel == "1") {
                 Level1(str);
@@ -69,8 +71,12 @@ public class GEDParser
     }
     public static void Level0(String str){
         String[] words = str.split(" ");
-
-        boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals) || Arrays.stream(zero_special_cases).anyMatch(words[2]::equals);
+        
+        String tag = words[1];
+        System.out.println("Words[1] is: " + tag);
+        boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(tag::equals);
+        
+        //|| Arrays.stream(zero_special_cases).anyMatch(words[2]::equals);
 
         if(isZeroTag){
             System.out.println("Level 0 Tag!");
