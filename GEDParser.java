@@ -60,39 +60,35 @@ public class GEDParser
         String[] words = str.split(" ");
 
         boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
+        isZeroTag = Arrays.stream(zero_special_cases).anyMatch(words[1]::equals);
 
         if(isZeroTag){
-            System.out.println("Correct");
+            System.out.println("Level 0 Tag!");
         }   
     }
 
     public static void Level1(String str){
         String[] words = str.split(" ");
 
-        boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
+        boolean isOneTag = Arrays.stream(one_tags).anyMatch(words[1]::equals);
 
-        if(isZeroTag){
-            System.out.println("Correct");
+        if(isOneTag){
+            System.out.println("Level 1 Tag!");
         }   
     }
 
     public static void Level2(String str){
         String[] words = str.split(" ");
 
-        boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
+        boolean isTwoTag = Arrays.stream(two_tags).anyMatch(words[1]::equals);
 
-        if(isZeroTag){
-            System.out.println("Correct");
+        if(isTwoTag){
+            System.out.println("Level 2 Tag!");
         }   
     }
 
     public static void InvalidLevel(String str){
-        String[] words = str.split(" ");
-
-        boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
-
-        if(isZeroTag){
-            System.out.println("Correct");
-        }   
+        // What to do here?
+        System.out.println("Invalid level!");
     }
 }
