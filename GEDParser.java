@@ -2,7 +2,36 @@ import java.io.*;
 import java.util.Arrays;
 
 public class GEDParser
-{ 
+{   
+    static String[] zero_tags = {
+        "HEAD",
+        "TRLR",
+        "NOTE"
+    };
+
+    static String[] zero_special_cases = {
+        "INDI",
+        "FAM"
+    };
+
+    static String[] one_tags = {
+        "NAME",
+        "SEX",
+        "BIRT",
+        "DEAT",
+        "FAMC",
+        "FAMS",
+        "MARR",
+        "HUSB",
+        "WIFE",
+        "CHIL",
+        "DIV",
+    };
+
+    static String[] two_tags = {
+        "DATA"
+    };
+
     public static void main(String[] args)throws Exception { 
         //https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
         File file = new File("proj02test.ged"); 
@@ -10,59 +39,32 @@ public class GEDParser
         String str; 
 
         while ((str = br.readLine()) != null) {
+            
+
             //Print input
             System.out.println("--> " + str);
             //Create changed input
-            String newStr = "";
 
-            int length = 0;
 
-            int level;
-            String id = "";
-            String tag;
-            String valid = "Y";
-            String[] arguments = {"","","","","","","","","","","","","","","",""};
+            //Split input str into array
+            String[] splitStr = str.split(" ");
 
-            String[] newStrArr = str.split(" ");
-            level = Integer.parseInt(newStrArr[0]);
-            tag = newStrArr[1];
-
-            if (newStrArr.length < 2 ){
-                valid = "N";
+            //------error: incompatible types: string[] cannot be conv to string
+            if(splitStr[0] == "0"){
+                Level0(splitStr);
             }
-
-            if (newStrArr[1].length() > 4){
-                valid = "N";
-            }
-
-            boolean idBefore = false;
-
-            if (newStrArr.length > 3 && (newStrArr[2] == "INDI" || newStrArr[2] == "FAM")){
-                id = newStrArr[1];
-                tag = newStrArr[2];
-                valid = "Y";   
-                idBefore = true; 
-
-                if (newStrArr.length > 3){
-                    for (int i = 3; i < newStrArr.length; i++){
-                        arguments[i] = newStrArr[i];
-                    }
-                }
-            }
-
-            if (newStrArr.length >= 3){
-                id = newStrArr[2];
-            }
-
-
-            ///...
-            if (idBefore){
-                System.out.println("<-- " + level + "|" + tag + "|" + valid + "|" + id + "|" );
-            }else{
-                System.out.println("<-- " + level + "|" + tag + "|" + valid + "|" );
-            }
-            
 
         }
-    } 
-} 
+    }
+    public static void Level0(String str){
+        String[] words = str.split(" ");
+
+        boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
+
+        if(isZeroTag){
+            System.out.println("Correct");
+        }
+
+        
+    }
+}
