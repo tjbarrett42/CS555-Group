@@ -49,14 +49,14 @@ public class GEDParser
             //Split input str into array
             String[] splitStr = str.split(" ");
 
-            int currLevel = splitStr[0];
+            String currLevel = splitStr[0];
 
             //Check which level and use appropriate method
             //Switch to cases later to prettify? 
             if(currLevel == "0") Level0(currLevel);
             else if(currLevel == "1") Level0(currLevel);
             else if(currLevel == "2") Level0(currLevel);
-            
+
         }
     }
     public static void Level0(String str){
