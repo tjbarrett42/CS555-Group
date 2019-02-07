@@ -50,20 +50,27 @@ public class GEDParser
             String[] splitStr = str.split(" ");
 
             String currLevel = splitStr[0];
+            // System.out.println(currLevel);
 
             //Check which level and use appropriate method
             //Switch to cases later to prettify? 
-            if(currLevel == "0") Level0(currLevel);
-            else if(currLevel == "1") Level0(currLevel);
-            else if(currLevel == "2") Level0(currLevel);
+            if (currLevel == "0") {
+                Level0(str);
+            } else if(currLevel == "1") {
+                Level1(str);
+            } else if(currLevel == "2") {
+                Level2(str);
+            } else {
+                // Currently every call goes to else
+                InvalidLevel(str);
+            }
 
         }
     }
     public static void Level0(String str){
         String[] words = str.split(" ");
 
-        boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
-        isZeroTag = Arrays.stream(zero_special_cases).anyMatch(words[1]::equals);
+        boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals) || Arrays.stream(zero_special_cases).anyMatch(words[2]::equals);
 
         if(isZeroTag){
             System.out.println("Level 0 Tag!");
