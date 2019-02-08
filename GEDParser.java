@@ -167,8 +167,8 @@ public class GEDParser
     public static void PrintTable(){
         //Convert id and fam arrays into readable strings
 
-        String const indPrintTemplate = "     |                      |      |          |   |     |          |             |             |\n";
-        String const famPrintTemplate = "     |          |          |          |                        |       |                    |                     |\n";
+        String indPrintTemplate = "     |                      |      |          |   |     |          |             |             |\n";
+        String famPrintTemplate = "     |          |          |          |                        |       |                    |                     |\n";
 
         System.out.println("Individuals")
         System.out.println("ID   |Name                  |Gender|Birthday  |Age|Alive|Death     |Children     |Spouse       |\n")
@@ -196,7 +196,7 @@ public class GEDParser
             //Move to next individual
         }
 
-        System.out.println("Individuals")
+        System.out.println("Individuals");
         System.out.println("ID   |Married   |Divorced  |Husband ID|Husband Name            |Wife ID|Wife Name           |Children             |\n}")
         System.out.println("-----+----------+----------+----------+------------------------+-------+--------------------+---------------------+\n")
         // Example info:    F1   |00-00-0000|NA        |I02       |Joe /Schmno             |True   |Jane Schmo          |NA                   |
