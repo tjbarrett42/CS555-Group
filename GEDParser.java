@@ -37,12 +37,16 @@ public class GEDParser
     /* Array of arrays
     Each array represents an individual:
     [ID, Name, Gender, Birthday, Age, Alive, Death Date, <Families as child>, <Family as Spouse>] */
-    static String[] individuals = new String[5000];
+    static String[][] individuals = new String[5000][9];
 
     /* Array of arrays
     Each array represents a family:
     [ID, Marriage Date, Divorce Date, Husband ID, Husband Name, Wife ID, Wife Name, <Ids of children> */
-    static String[] families = new String[1000];
+    static String[][] families = new String[1000][8];
+
+    // Identifiers
+    static String currentInd = "";
+    static String currentFam = "";
 
     public static void main(String[] args)throws Exception { 
         //https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
@@ -52,17 +56,18 @@ public class GEDParser
 
         while ((str = br.readLine()) != null) {
             
-            //Print input
-            System.out.println("--> " + str);
-
             //Split input str into array
             String[] splitStr = str.split(" ");
+
+            // Trim whitespace and newlines from strings
+            for(int i = 0; i < splitStr.length; i++) {
+                splitStr[i] = splitStr[i].trim();
+            }
 
             int currLevel = Integer.valueOf(splitStr[0]);
 
             //Check which level and use appropriate method
             //Switch to cases later to prettify? 
-            System.out.println("Current level: " + currLevel);
             if (currLevel == 0) {
                 Level0(str);
             } else if(currLevel == 1) {
@@ -75,26 +80,26 @@ public class GEDParser
         }
         br.close();
     }
+
     public static void Level0(String str){
         String[] words = str.split(" ");
 
-        // Check if this is ine of the cases where it is just two words long
+        // Check if this is one of the cases where it is just two words long
         if (words.length < 3) {
-            boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(tag::equals);
+            boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
             if (isZeroTag) {
-                // Validated it's a true tag
-                System.out.println("Level 0 Tag: " + words[1]);
+                // HEAD or TRLR -> We can ignore this for now
+                return;
             }   
         } else {
             boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
             boolean isSpecialZeroTag = Arrays.stream(zero_special_cases).anyMatch(words[2]::equals);
             if (isZeroTag) {
-                // Validated it's a true tag
-                System.out.println("Level 0 Tag: " + words[1]);
+                // NOTE -> We can ignore this for now
+                return; 
             } else if(isSpecialZeroTag) {
-                // Validated it's a true tag
-                System.out.println("Level 0 Tag: " + words[2]); 
                 // Create a new individual or family
+                System.out.println("Triggering create with tag " + words[2]);
                 Create(words[2], words[1]);
             }
         }
@@ -107,7 +112,11 @@ public class GEDParser
         boolean isOneTag = Arrays.stream(one_tags).anyMatch(tag::equals);
         
         if (isOneTag) {
-            System.out.println("Level 1 Tag: " + tag);
+            if (tag == "NAME") {
+                System.out.println("Level 1 tag is " + tag);
+                System.out.println("Calling name for individual " + currentInd + " with name " + words[2]);
+                NameIndividual(words[2], currentInd);
+            }
         }   
     }
 
@@ -123,22 +132,35 @@ public class GEDParser
     }
 
     public static void InvalidLevel(String str){
-        // What to do here?
-        System.out.println("Invalid level!");
+        // Skip this line
+        return;
     }
 
     // Create a new individual or family
     public static void Create(String tag, String id) {
+        // System.out.println(tag);
         if (tag == "INDI") {
             // Create new indiviual
             String[] indi = {id, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA"};
-
+            System.out.println("Individual " + id + " created");
+            // TODO: Add to individuals
+            currentInd = id;
         } else if (tag == "FAM") {
             // Create new family
             String[] fam = {id, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA"};
-            
-        } else {
-            System.out.println("Warning! This function should not have been called!");
+            System.out.println("Family " + id + " created");
+            // TODO: Add to families
+            currentFam = id;
+        }
+    }
+
+    public static void NameIndividual(String name, String id) {
+        for (int i = 0; i < 5000; i++) {
+            if (individuals[i][0] == id) {
+                individuals[i][1] = name;
+                System.out.println("Individual " + id + " is named " + name);
+                return;
+            }
         }
     }
 
