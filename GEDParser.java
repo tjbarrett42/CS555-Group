@@ -43,6 +43,10 @@ public class GEDParser
     [ID, Marriage Date, Divorce Date, Husband ID, Husband Name, Wife ID, Wife Name, <Ids of children> */
     static String[] families = new String[1000];
 
+    // Identifiers
+    static String currentInd = "";
+    static String currentFam = "";
+
     public static void main(String[] args)throws Exception { 
         //https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
         File file = new File("proj02test.ged"); 
@@ -131,11 +135,11 @@ public class GEDParser
         if (tag == "INDI") {
             // Create new indiviual
             String[] indi = {id, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA"};
-
+            currentInd = id;
         } else if (tag == "FAM") {
             // Create new family
             String[] fam = {id, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA"};
-            
+            currentFam = id;
         } else {
             System.out.println("Warning! This function should not have been called!");
         }
