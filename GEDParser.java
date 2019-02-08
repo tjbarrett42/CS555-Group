@@ -68,27 +68,32 @@ public class GEDParser
     }
     public static void Level0(String str){
         String[] words = str.split(" ");
-        
-        String tag = words[1];
-        System.out.println("Words[1] is: " + tag);
-        boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(tag::equals);
-        
-        //|| Arrays.stream(zero_special_cases).anyMatch(words[2]::equals);
 
-        if(isZeroTag){
-            System.out.println("Level 0 Tag!");
-        }   
+        // Check if this is ine of the cases where it is just two words long
+        if (words.length < 3) {
+            boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(tag::equals);
+            if (isZeroTag) {
+                System.out.println("Level 0 Tag: " + words[1]);
+            }   
+        } else {
+            boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
+            boolean isSpecialZeroTag = Arrays.stream(zero_special_cases).anyMatch(words[2]::equals);
+            if (isZeroTag) {
+                System.out.println("Level 0 Tag: " + words[1]);
+            } else if(isSpecialZeroTag) {
+                System.out.println("Level 0 Tag: " + words[2]); 
+            }
+        }
     }
 
     public static void Level1(String str){
         String[] words = str.split(" ");
 
         String tag = words[1];
-        System.out.println("Words[1] is: " + tag);
-        boolean isOneTag = Arrays.stream(one_tags).anyMatch(words[1]::equals);
-
-        if(isOneTag){
-            System.out.println("Level 1 Tag!");
+        boolean isOneTag = Arrays.stream(one_tags).anyMatch(tag::equals);
+        
+        if (isOneTag) {
+            System.out.println("Level 1 Tag: " + tag);
         }   
     }
 
@@ -96,11 +101,10 @@ public class GEDParser
         String[] words = str.split(" ");
 
         String tag = words[1];
-        System.out.println("Words[1] is: " + tag);
-        boolean isTwoTag = Arrays.stream(two_tags).anyMatch(words[1]::equals);
+        boolean isTwoTag = Arrays.stream(two_tags).anyMatch(tag::equals);
 
         if(isTwoTag){
-            System.out.println("Level 2 Tag!");
+            System.out.println("Level 2 Tag: " + tag);
         }   
     }
 
