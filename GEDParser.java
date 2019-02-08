@@ -1,3 +1,5 @@
+// Current issues: \n characters are messing up equality statements
+
 import java.io.*; 
 import java.util.Arrays;
 import java.lang.*;
@@ -170,7 +172,7 @@ public class GEDParser
         String indPrintTemplate = "     |                      |      |          |   |     |          |             |             |\n";
         String famPrintTemplate = "     |          |          |          |                        |       |                    |                     |\n";
 
-        System.out.println("Individuals")
+        System.out.println("Individuals");
         System.out.println("ID   |Name                  |Gender|Birthday  |Age|Alive|Death     |Children     |Spouse       |\n")
         System.out.println("-----+----------------------+------+----------+---+-----+----------+-------------+-------------+\n")
         // Example info:    I01  |Timothy /Barrett/     |M     |02-26-1998|20 |True |NA        |NA           |NA           |
