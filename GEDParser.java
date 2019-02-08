@@ -40,11 +40,8 @@ public class GEDParser
 
         while ((str = br.readLine()) != null) {
             
-
             //Print input
             System.out.println("--> " + str);
-            //Create changed input
-
 
             //Split input str into array
             String[] splitStr = str.split(" ");
@@ -63,8 +60,8 @@ public class GEDParser
             } else {
                 InvalidLevel(str);
             }
-
         }
+        br.close();
     }
     public static void Level0(String str){
         String[] words = str.split(" ");
