@@ -1,5 +1,6 @@
 import java.io.*; 
 import java.util.Arrays;
+// import java.util.ArrayList;
 
 public class GEDParser
 {   
@@ -31,6 +32,16 @@ public class GEDParser
     static String[] two_tags = {
         "DATA"
     };
+
+    /* Array of arrays
+    Each array represents an individual:
+    [ID, Name, Gender, Birthday, Age, Alive, Death Date, <Families as child>, <Family as Spouse>] */
+    static String[] individuals = new String[5000];
+
+    /* Array of arrays
+    Each array represents a family:
+    [ID, Marriage Date, Divorce Date, Husband ID, Husband Name, Wife ID, Wife Name, <Ids of children> */
+    static String[] families = new String[1000];
 
     public static void main(String[] args)throws Exception { 
         //https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
@@ -70,15 +81,20 @@ public class GEDParser
         if (words.length < 3) {
             boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(tag::equals);
             if (isZeroTag) {
+                // Validated it's a true tag
                 System.out.println("Level 0 Tag: " + words[1]);
             }   
         } else {
             boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
             boolean isSpecialZeroTag = Arrays.stream(zero_special_cases).anyMatch(words[2]::equals);
             if (isZeroTag) {
+                // Validated it's a true tag
                 System.out.println("Level 0 Tag: " + words[1]);
             } else if(isSpecialZeroTag) {
+                // Validated it's a true tag
                 System.out.println("Level 0 Tag: " + words[2]); 
+                // Create a new individual or family
+                Create(words[2], words[1]);
             }
         }
     }
@@ -108,5 +124,20 @@ public class GEDParser
     public static void InvalidLevel(String str){
         // What to do here?
         System.out.println("Invalid level!");
+    }
+
+    // Create a new individual or family
+    public static void Create(String tag, String id) {
+        if (tag == "INDI") {
+            // Create new indiviual
+            String[] indi = {id, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA"};
+
+        } else if (tag == "FAM") {
+            // Create new family
+            String[] fam = {id, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA"};
+            
+        } else {
+            System.out.println("Warning! This function should not have been called!");
+        }
     }
 }
