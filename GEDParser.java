@@ -1,5 +1,6 @@
 import java.io.*; 
 import java.util.Arrays;
+import java.lang.*;
 // import java.util.ArrayList;
 
 public class GEDParser
@@ -138,6 +139,64 @@ public class GEDParser
             
         } else {
             System.out.println("Warning! This function should not have been called!");
+        }
+    }
+
+    public static void PrintTable(){
+        //Convert id and fam arrays into readable strings
+
+        String const indPrintTemplate = "     |                      |      |          |   |     |          |             |             |\n";
+        String const famPrintTemplate = "     |          |          |          |                        |       |                    |                     |\n";
+
+        System.out.println("Individuals")
+        System.out.println("ID   |Name                  |Gender|Birthday  |Age|Alive|Death     |Children     |Spouse       |\n")
+        System.out.println("-----+----------------------+------+----------+---+-----+----------+-------------+-------------+\n")
+        // Example info:    I01  |Timothy /Barrett/     |M     |02-26-1998|20 |True |NA        |NA           |NA           |
+        // Index:           0    5                      29     36         46  50    56         67            81            94    
+
+        //Print ID arrays here
+        //Keep iterating until an element is found without an ID, ie the end of the array
+        for (int i = 0; individuals[i][0] != ""; i++){
+            String indPrint = indPrintTemplate;
+            //use replace() to add data in specific index. Also prevents overflow with end index
+            indPrint.replace(0,5,individuals[i][0]); //ID
+            indPrint.replace(6,29,individuals[i][1]); //Name
+            indPrint.replace(30,36,individuals[i][2]); //Gender
+            indPrint.replace(37,46,individuals[i][3]); //Birthday
+            indPrint.replace(47,50,individuals[i][4]); //Age
+            indPrint.replace(51,56,individuals[i][5]); //Alive
+            indPrint.replace(57,67,individuals[i][6]); //Death
+            indPrint.replace(68,81,individuals[i][7]); //Children
+            indPrint.replace(82,94,individuals[i][8]); //False
+            
+            //Once every section is populated, print
+            System.out.println(indPrint + "\n");
+            //Move to next individual
+        }
+
+        System.out.println("Individuals")
+        System.out.println("ID   |Married   |Divorced  |Husband ID|Husband Name            |Wife ID|Wife Name           |Children             |\n}")
+        System.out.println("-----+----------+----------+----------+------------------------+-------+--------------------+---------------------+\n")
+        // Example info:    F1   |00-00-0000|NA        |I02       |Joe /Schmno             |True   |Jane Schmo          |NA                   |
+        // Spacing          0    5          16         27         38                       63      71                   92                    113
+
+        //Print F arrays here:
+        for (int i = 0; families[i][0] != ""; i++){
+            String famPrint = famPrintTemplate;
+            //use replace() to add data in specific index. Also prevents overflow with end index
+            famPrint.replace(0,5,families[i][0]); //ID
+            famPrint.replace(6,16,families[i][1]); //Married
+            famPrint.replace(17,27,families[i][2]); //Divorced
+            famPrint.replace(28,38,families[i][3]); //Husband ID
+            famPrint.replace(39,63,families[i][4]); //Husband Name
+            famPrint.replace(64,71,families[i][5]); //Wife ID
+            famPrint.replace(71,92,families[i][6]); //Wife Name
+            famPrint.replace(93,113,families[i][7]); //Children
+            
+            //Once every section is populated, print
+            
+            System.out.println(famPrint + "\n");
+            //Move to next individual
         }
     }
 }
