@@ -1,4 +1,10 @@
 // Current issues: \n characters are messing up equality statements
+/*  TODOs:
+    Add individuals and families to array in Create()
+    Properly get last three words as date in Level2()
+    Add functionality in Level1() to FAMC, FAMS, HUSB, WIFE, CHIL
+    Test functions
+     */
 
 import java.io.*; 
 import java.util.Arrays;
@@ -33,7 +39,7 @@ public class GEDParser
     };
 
     static String[] two_tags = {
-        "DATA"
+        "DATE"
     };
 
     /* Array of arrays
@@ -49,6 +55,7 @@ public class GEDParser
     // Identifiers
     static String currentInd = "";
     static String currentFam = "";
+    static String waitingEvent = ""; // This string holds either birth, death, marriage, or divorce. We use it to know what to do when we come across a date tag
 
     public static void main(String[] args)throws Exception { 
         //https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
@@ -90,18 +97,18 @@ public class GEDParser
         if (words.length < 3) {
             boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
             if (isZeroTag) {
-                // HEAD or TRLR -> We can ignore this for now
+                // HEAD or TRLR -> We can ignore this as of Feb. 10
                 return;
             }   
         } else {
             boolean isZeroTag = Arrays.stream(zero_tags).anyMatch(words[1]::equals);
             boolean isSpecialZeroTag = Arrays.stream(zero_special_cases).anyMatch(words[2]::equals);
             if (isZeroTag) {
-                // NOTE -> We can ignore this for now
+                // NOTE -> We can ignore this as of Feb. 10
                 return; 
             } else if(isSpecialZeroTag) {
-                // Create a new individual or family
-                System.out.println("Triggering create with tag " + words[2]);
+                // INDI or FAM -> Create a new individual or family
+                // System.out.println("Triggering create with tag " + words[2]);
                 Create(words[2], words[1]);
             }
         }
@@ -115,9 +122,37 @@ public class GEDParser
         
         if (isOneTag) {
             if (tag == "NAME") {
-                System.out.println("Level 1 tag is " + tag);
-                System.out.println("Calling name for individual " + currentInd + " with name " + words[2]);
-                NameIndividual(words[2], currentInd);
+                // System.out.println("Calling name for individual " + currentInd + " with name " + words[2]);
+                // Place the individual's name in the records
+                NameIndividual(words[2]);
+            } else if (tag == "SEX") {
+                // Place the individual's sex in the records
+                AssignSexToIndividual(words[2]);
+            } else if (tag == "BIRT") {
+                // Set the next event for a date to birth
+                waitingEvent = "birth";
+                // WaitForBirthdate(currentInd);
+            } else if (tag == "DEAT") {
+                // Set the next event for a date to death
+                waitingEvent = "death";
+            } else if (tag == "FAMC") {
+
+            } else if (tag == "FAMS") {
+
+            } else if (tag == "MARR") {
+                // Set the next event for a date to marriage
+                waitingEvent = "marriage";
+            } else if (tag == "HUSB") {
+                
+            } else if (tag == "WIFE") {
+                
+            } else if (tag == "CHIL") {
+                
+            } else if (tag == "DIV") {
+                // Set the next event for a date to divorce          
+                waitingEvent = "divorce";  
+            } else {
+                return;
             }
         }   
     }
@@ -126,15 +161,17 @@ public class GEDParser
         String[] words = str.split(" ");
 
         String tag = words[1];
+        String date = "TEMPORARY PLACEHOLDER"; // TODO: Make date be the rest of words as one string
         boolean isTwoTag = Arrays.stream(two_tags).anyMatch(tag::equals);
 
         if(isTwoTag){
-            System.out.println("Level 2 Tag: " + tag);
+            // The tag can only be date 
+            AddDate(date);
         }   
     }
 
     public static void InvalidLevel(String str){
-        // Skip this line
+        // Skip the current line, it's invalid for sure
         return;
     }
 
@@ -156,13 +193,59 @@ public class GEDParser
         }
     }
 
-    public static void NameIndividual(String name, String id) {
+    /* 
+        BELOW: Functions to fill in information about individuals given in level 1 tags
+        Are these working properly? I was having trouble yesterday
+    */
+
+    // Fill in the name of an individual
+    public static void NameIndividual(String name) {
+        // Iterate through individuals looking for the current one
         for (int i = 0; i < 5000; i++) {
-            if (individuals[i][0] == id) {
+            if (individuals[i][0] == currentInd) {
                 individuals[i][1] = name;
-                System.out.println("Individual " + id + " is named " + name);
+                // System.out.println("Individual " + id + " is named " + name);
                 return;
             }
+        }
+    }
+
+    public static void AssignSexToIndividual(String sex) {
+        // Iterate through individuals looking for the current one
+        for (int i = 0; i < 5000; i++) {
+            if (individuals[i][0] == currentInd) {
+                individuals[i][2] = sex;
+                // System.out.println("Individual " + id + " is of sex " + sex);
+                return;
+            }
+        }
+    }
+
+    // Add a date to the proper field
+    public static void AddDate(String date) {
+        // Iterate through individuals and families looking for the current one
+        int placeOfInd = 0;
+        for (int i = 0; i < 5000; i++) {
+            if (individuals[i][0] == currentInd) {
+                placeOfInd = i;
+            }
+        }
+        int placeOfFam = 0;
+        for (int j = 0; j < 1000; j++) {
+            if (families[j][0] == currentFam) {
+                placeOfFam = j;
+            }
+        }
+        if (waitingEvent == "birth") {
+            individuals[placeOfInd][3] = date;
+        } else if (waitingEvent == "death") {
+            individuals[placeOfInd][6] = date;
+        } else if (waitingEvent == "marriage") {
+            families[placeOfFam][1] = date;
+        } else if (waitingEvent == "divorce") {
+            families[placeOfFam][2] = date;
+        } else {
+            return;
         }
     }
 
