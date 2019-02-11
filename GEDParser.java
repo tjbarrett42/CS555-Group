@@ -256,8 +256,8 @@ public class GEDParser
         String famPrintTemplate = "     |          |          |          |                        |       |                    |                     |\n";
 
         System.out.println("Individuals");
-        System.out.println("ID   |Name                  |Gender|Birthday  |Age|Alive|Death     |Children     |Spouse       |\n")
-        System.out.println("-----+----------------------+------+----------+---+-----+----------+-------------+-------------+\n")
+        System.out.println("ID   |Name                  |Gender|Birthday  |Age|Alive|Death     |Children     |Spouse       |\n");
+        System.out.println("-----+----------------------+------+----------+---+-----+----------+-------------+-------------+\n");
         // Example info:    I01  |Timothy /Barrett/     |M     |02-26-1998|20 |True |NA        |NA           |NA           |
         // Index:           0    5                      29     36         46  50    56         67            81            94    
 
@@ -282,8 +282,8 @@ public class GEDParser
         }
 
         System.out.println("Individuals");
-        System.out.println("ID   |Married   |Divorced  |Husband ID|Husband Name            |Wife ID|Wife Name           |Children             |\n}")
-        System.out.println("-----+----------+----------+----------+------------------------+-------+--------------------+---------------------+\n")
+        System.out.println("ID   |Married   |Divorced  |Husband ID|Husband Name            |Wife ID|Wife Name           |Children             |\n}");
+        System.out.println("-----+----------+----------+----------+------------------------+-------+--------------------+---------------------+\n");
         // Example info:    F1   |00-00-0000|NA        |I02       |Joe /Schmno             |True   |Jane Schmo          |NA                   |
         // Spacing          0    5          16         27         38                       63      71                   92                    113
 
