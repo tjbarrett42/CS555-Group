@@ -1,7 +1,7 @@
 // Dylan DiGeronimo
 // I pledge my honor that I have abided by the Stevens Honor System
 
-public class MarriageBeforeDivorce {
+public class MarriageBeforeDivorce extends GEDParser {
 
     // I'm pulling the basic structure for this from my group's project
     // I'm not sure where it will fit in to the full structure, so I will have it run on the already stored families rather than on the GEDCOM file

@@ -1,7 +1,7 @@
 // Dylan DiGeronimo and Somya Gambhir
 // I pledge my honor that I have abided by the Stevens Honor System
 
-public class MarriageBeforeDeath {
+public class MarriageBeforeDeath extends GEDParser {
 
 	static String[][] individuals = {
 	        {"1", "Tim", "NA", "01-01-1900", "NA", "NA", "NA", "NA", "NA"},
