@@ -58,6 +58,12 @@ public class GEDParser
     static String waitingEvent = ""; // This string holds either birth, death, marriage, or divorce. We use it to know what to do when we come across a date tag
 
     public static void main(String[] args)throws Exception { 
+        // Check for proper command line args
+        if (args.length != 2) {
+            System.out.println("USAGE: java GEDParser yourFileHere.ged");
+        } 
+        // TODO: Check file extension
+
         //https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
         File file = new File("proj02test.ged"); 
         BufferedReader br = new BufferedReader(new FileReader(file)); 
@@ -87,6 +93,9 @@ public class GEDParser
             }
         }
         br.close();
+        
+        checkIndividuals();
+        checkFamilies();
         
         PrintTable();
     }
@@ -194,10 +203,7 @@ public class GEDParser
         }
     }
 
-    /* 
-        BELOW: Functions to fill in information about individuals given in level 1 tags
-        Are these working properly? I was having trouble yesterday
-    */
+    // BELOW: Functions to fill in information about individuals given in level 1 tags
 
     // Fill in the name of an individual
     public static void NameIndividual(String name) {
@@ -248,6 +254,17 @@ public class GEDParser
         } else {
             return;
         }
+    }
+
+    // Go through all individuals and apply all individual-level user stories to them
+    public static void checkIndividuals() {
+
+    }
+
+    
+    // Go through all families and apply all family-level user stories to them
+    public static void checkFamilies() {
+
     }
 
     public static void PrintTable(){
