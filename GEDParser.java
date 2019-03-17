@@ -1,6 +1,6 @@
 // Current issues: \n characters are messing up equality statements
 /*  TODOs:
-    Add functionality in level1() to FAMC, FAMS, HUSB, WIFE, CHIL
+    Add functionality in level1() to HUSB, WIFE, CHIL
     Test functions
      */
 
@@ -165,20 +165,23 @@ public class GEDParser {
                 // Set the next event for a date to death
                 waitingEvent = "death";
             } else if (tag == "FAMC") {
-                // Add the current individual as a child in the specified family and update their "child in family" field
-                addChild(words[2]);
+                // Update the current individual's "child in family" field
+                updateChild(words[2]);
             } else if (tag == "FAMS") {
                 // Update the current individual's "spouse in family" field
-                addSpouse(words[2]);
+                updateSpouse(words[2]);
             } else if (tag == "MARR") {
                 // Set the next event for a date to marriage
                 waitingEvent = "marriage";
             } else if (tag == "HUSB") {
-                
+                // Add the specified individual to the current family as the husband
+
             } else if (tag == "WIFE") {
-                
+                // Add the specified individual to the current family as the wife
+
             } else if (tag == "CHIL") {
-                
+                // Add the specified individual to the current family as a child
+                addChild(words[2]);
             } else if (tag == "DIV") {
                 // Set the next event for a date to divorce          
                 waitingEvent = "divorce";  
@@ -327,19 +330,8 @@ public class GEDParser {
     }
 
     // Add a child to a family
-    public static void addChild(String famID) {
-        // Find specified family
-        for (int i = 0; i < families.length; i++) {
-            if (families[i][0].equals(famID)) {
-                // Family found, see if children are empty (first child has different formatting)
-                if (families[i][7].equals("NA")) {
-                    families[i][7] = currentInd;
-                } else {
-                    families[i][7] += (", " + currentInd);
-                }
-            }
-        }
-        // Now, update child to add the family id
+    public static void updateChild(String famID) {
+        // Find current individual and update child to add the family id
         for (int i = 0; i < individuals.length; i++) {
             if (individuals[i][0].equals(currentInd)) {
                 individuals[i][7] = famID;
@@ -348,11 +340,25 @@ public class GEDParser {
     }
 
     // Update an individual's spouse in family field
-    public static void addSpouse(String famID) {
+    public static void updateSpouse(String famID) {
         // Find current individual
         for (int i = 0; i < individuals.length; i++) {
             if (individuals[i][0].equals(currentInd)) {
                 individuals[i][8].equals(famID);
+            }
+        }
+    }
+
+    public static void addChild(String childId) {
+         // Find current family
+         for (int i = 0; i < families.length; i++) {
+            if (families[i][0].equals(currentFam);
+                // Family found, see if children are empty (first child has different formatting)
+                if (families[i][7].equals("NA")) {
+                    families[i][7] = currentInd;
+                } else {
+                    families[i][7] += (", " + currentInd);
+                }
             }
         }
     }
