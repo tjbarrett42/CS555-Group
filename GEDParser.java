@@ -1,8 +1,4 @@
-// Current issues: \n characters are messing up equality statements
-/*  TODOs:
-    Add functionality in level1() to HUSB, WIFE
-    Test functions
-     */
+// Dylan DiGeronimo, Tim Barrett, Somya Gambhir
 
 import java.io.*; 
 import java.util.Arrays;
