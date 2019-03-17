@@ -1,6 +1,5 @@
 // Current issues: \n characters are messing up equality statements
 /*  TODOs:
-    Properly get last three words as date in level2()
     Add functionality in level1() to FAMC, FAMS, HUSB, WIFE, CHIL
     Test functions
      */
@@ -166,7 +165,8 @@ public class GEDParser {
                 // Set the next event for a date to death
                 waitingEvent = "death";
             } else if (tag == "FAMC") {
-
+                // Add the current individual as a child in the specified family 
+                addChild(words[2]);
             } else if (tag == "FAMS") {
 
             } else if (tag == "MARR") {
@@ -321,6 +321,21 @@ public class GEDParser {
             if (families[i] == null) {
                 families[i] = family;
                 break;
+            }
+        }
+    }
+
+    // Add a child to a family()
+    public static void addChild(String famID) {
+        // Find specified family
+        for (int i = 0; i < families.length; i++) {
+            if (families[i][0].equals(famID)) {
+                // Family found, see if children are empty (first child has different formatting)
+                if (families[i][7].equals("NA")) {
+                    families[i][7] = currentInd;
+                } else {
+                    families[i][7] += (", " + currentInd);
+                }
             }
         }
     }
