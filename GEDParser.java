@@ -11,8 +11,13 @@ import java.util.Arrays;
 import java.lang.*;
 // import java.util.ArrayList;
 
-public class GEDParser
-{   
+public class GEDParser {   
+
+    // import other user stories as objects
+    private static MarriageBeforeDeath MarriageBeforeDeath;
+    private static MarriageBeforeDivorce MarriageBeforeDivorce;
+    private static LessThan150 LessThan150;
+
     static String[] zero_tags = {
         "HEAD",
         "TRLR",
@@ -276,13 +281,24 @@ public class GEDParser
 
     // Go through all individuals and apply all individual-level user stories to them
     public static void checkIndividuals() {
-
+        for (int i = 0; i < individuals.length; i++) {
+            if (!LessThan150.checkLessThan150(individuals[i])) {
+                System.out.println("ERROR: Individual " + individuals[i][0] + " is more than 150 years old!");
+            }
+        }
     }
 
     
     // Go through all families and apply all family-level user stories to them
     public static void checkFamilies() {
-
+        for (int i = 0; i < families.length; i++) {
+            if (!MarriageBeforeDeath.checkMarriageBeforeDeath(families[i])) {
+                System.out.println("ERROR: Family " + families[i][0] + " was married after the death of a spouse!");
+            }
+            if (!MarriageBeforeDivorce.checkMarriageBeforeDivorce(families[i])) {
+                System.out.println("ERROR: Family " + families[i][0] + " was divorced before they were married!");
+            }
+        }
     }
 
     public static void PrintTable(){

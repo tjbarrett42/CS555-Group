@@ -45,7 +45,7 @@ public class MarriageBeforeDivorce {
 		}
 	}
 
-	public static boolean CheckMarriageBeforeDivorce(String[] family) {
+	public static boolean checkMarriageBeforeDivorce(String[] family) {
 		if ((family[1] == "NA" && family[2] == "NA") || (family[1] != "NA" && family[2] == "NA")) {
 			// Valid to be neither married nor divorced or married but not divorced
 			return true;
