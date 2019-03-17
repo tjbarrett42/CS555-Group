@@ -52,7 +52,7 @@ public class GEDParser {
 
     /* Array of arrays
     Each array represents a family:
-    [ID, Marriage Date, Divorce Date, Husband ID, Husband Name, Wife ID, Wife Name, <Ids of children> */
+    [ID, Marriage Date, Divorce Date, Husband ID, Husband Name, Wife ID, Wife Name, <Ids of children>] */
     static String[][] families = new String[1000][8];
 
     // Identifiers
@@ -165,10 +165,11 @@ public class GEDParser {
                 // Set the next event for a date to death
                 waitingEvent = "death";
             } else if (tag == "FAMC") {
-                // Add the current individual as a child in the specified family 
+                // Add the current individual as a child in the specified family and update their "child in family" field
                 addChild(words[2]);
             } else if (tag == "FAMS") {
-
+                // Update the current individual's "spouse in family" field
+                addSpouse(words[2]);
             } else if (tag == "MARR") {
                 // Set the next event for a date to marriage
                 waitingEvent = "marriage";
@@ -325,7 +326,7 @@ public class GEDParser {
         }
     }
 
-    // Add a child to a family()
+    // Add a child to a family
     public static void addChild(String famID) {
         // Find specified family
         for (int i = 0; i < families.length; i++) {
@@ -336,6 +337,22 @@ public class GEDParser {
                 } else {
                     families[i][7] += (", " + currentInd);
                 }
+            }
+        }
+        // Now, update child to add the family id
+        for (int i = 0; i < individuals.length; i++) {
+            if (individuals[i][0].equals(currentInd)) {
+                individuals[i][7] = famID;
+            }
+        }
+    }
+
+    // Update an individual's spouse in family field
+    public static void addSpouse(String famID) {
+        // Find current individual
+        for (int i = 0; i < individuals.length; i++) {
+            if (individuals[i][0].equals(currentInd)) {
+                individuals[i][8].equals(famID);
             }
         }
     }
