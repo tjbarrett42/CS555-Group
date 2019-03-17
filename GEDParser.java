@@ -59,18 +59,36 @@ public class GEDParser
 
     public static void main(String[] args)throws Exception { 
         // Check for proper command line args
-        if (args.length != 2) {
+        if (args.length != 1) {
             System.out.println("USAGE: java GEDParser yourFileHere.ged");
+            System.exit(1);
         } 
-        // TODO: Check file extension
 
-        //https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
-        File file = new File("proj02test.ged"); 
+        // Check file extension --> https://stackoverflow.com/questions/3571223/how-do-i-get-the-file-extension-of-a-file-in-java
+        String extension = "";
+        int lastIndex = args[0].lastIndexOf('.');
+        if (lastIndex > 0) {
+            extension = args[0].substring(lastIndex + 1);
+        } else {
+            System.out.println("ERROR: Must specify a GEDCOM file");
+            System.exit(1);
+        }
+
+        if (!extension.equals("ged")) {
+            System.out.println("ERROR: Must specify a GEDCOM file");
+            System.exit(1);
+        }
+
+        // https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
+        File file = new File(args[0]); 
+        if (!file.exists()) {
+            System.out.println("ERROR: GEDCOM file does not exist!");
+            System.exit(1);
+        } 
         BufferedReader br = new BufferedReader(new FileReader(file)); 
         String str; 
 
         while ((str = br.readLine()) != null) {
-            
             //Split input str into array
             String[] splitStr = str.split(" ");
 
