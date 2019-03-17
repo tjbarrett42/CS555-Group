@@ -1,8 +1,7 @@
 // Current issues: \n characters are messing up equality statements
 /*  TODOs:
-    Add individuals and families to array in Create()
-    Properly get last three words as date in Level2()
-    Add functionality in Level1() to FAMC, FAMS, HUSB, WIFE, CHIL
+    Properly get last three words as date in level2()
+    Add functionality in level1() to FAMC, FAMS, HUSB, WIFE, CHIL
     Test functions
      */
 
@@ -106,13 +105,13 @@ public class GEDParser {
 
             //Check which level and use appropriate method
             if (currLevel == 0) {
-                Level0(str);
+                level0(str);
             } else if(currLevel == 1) {
-                Level1(str);
+                level1(str);
             } else if(currLevel == 2) {
-                Level2(str);
+                level2(str);
             } else {
-                InvalidLevel(str);
+                invalidLevel(str);
             }
         }
         br.close();
@@ -120,10 +119,10 @@ public class GEDParser {
         checkIndividuals();
         checkFamilies();
         
-        PrintTable();
+        printTable();
     }
 
-    public static void Level0(String str){
+    public static void level0(String str){
         String[] words = str.split(" ");
 
         // Check if this is one of the cases where it is just two words long
@@ -140,14 +139,13 @@ public class GEDParser {
                 // NOTE -> We can ignore this as of Feb. 10
                 return; 
             } else if(isSpecialZeroTag) {
-                // INDI or FAM -> Create a new individual or family
-                // System.out.println("Triggering create with tag " + words[2]);
-                Create(words[2], words[1]);
+                // INDI or FAM -> create a new individual or family
+                create(words[2], words[1]);
             }
         }
     }
 
-    public static void Level1(String str){
+    public static void level1(String str){
         String[] words = str.split(" ");
 
         String tag = words[1];
@@ -155,12 +153,11 @@ public class GEDParser {
         
         if (isOneTag) {
             if (tag == "NAME") {
-                // System.out.println("Calling name for individual " + currentInd + " with name " + words[2]);
                 // Place the individual's name in the records
-                NameIndividual(words[2]);
+                nameIndividual(words[2]);
             } else if (tag == "SEX") {
                 // Place the individual's sex in the records
-                AssignSexToIndividual(words[2]);
+                assignSexToIndividual(words[2]);
             } else if (tag == "BIRT") {
                 // Set the next event for a date to birth
                 waitingEvent = "birth";
@@ -190,38 +187,67 @@ public class GEDParser {
         }   
     }
 
-    public static void Level2(String str){
+    public static void level2(String str){
         String[] words = str.split(" ");
-
         String tag = words[1];
-        String date = "TEMPORARY PLACEHOLDER"; // TODO: Make date be the rest of words as one string
         boolean isTwoTag = Arrays.stream(two_tags).anyMatch(tag::equals);
 
         if(isTwoTag){
-            // The tag can only be date 
-            AddDate(date);
+            // The tag can only be date
+            // Convert month to number 
+            String monthWord = words[3];
+            String month = "0";
+            if (monthWord.equals("JAN")) {
+                month = "1";
+            } else if (monthWord.equals("FEB")) {
+                month = "2";
+            } else if (monthWord.equals("MAR")) {
+                month = "3";
+            } else if (monthWord.equals("APR")) {
+                month = "4";
+            } else if (monthWord.equals("MAY")) {
+                month = "5";
+            } else if (monthWord.equals("JUN")) {
+                month = "6";
+            } else if (monthWord.equals("JUL")) {
+                month = "7";
+            } else if (monthWord.equals("AUG")) {
+                month = "8";
+            } else if (monthWord.equals("SEP")) {
+                month = "9";
+            } else if (monthWord.equals("OCT")) {
+                month = "10";
+            } else if (monthWord.equals("NOV")) {
+                month = "11";
+            } else if (monthWord.equals("DEC")) {
+                month = "12";
+            }
+            String day = words[2];
+            String year = words[4];
+            String date = month + "-" + day + "-" + year;
+            addDate(date);
         }   
     }
 
-    public static void InvalidLevel(String str){
+    public static void invalidLevel(String str){
         // Skip the current line, it's invalid for sure
         return;
     }
 
-    // Create a new individual or family
-    public static void Create(String tag, String id) {
+    // create a new individual or family
+    public static void create(String tag, String id) {
         // System.out.println(tag);
         if (tag == "INDI") {
-            // Create new indiviual
+            // create new indiviual
             String[] indi = {id, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA"};
-            System.out.println("Individual " + id + " created");
-            // TODO: Add to individuals
+            // System.out.println("Individual " + id + " created");
+            addIndividual(indi);
             currentInd = id;
         } else if (tag == "FAM") {
-            // Create new family
+            // create new family
             String[] fam = {id, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA"};
-            System.out.println("Family " + id + " created");
-            // TODO: Add to families
+            // System.out.println("Family " + id + " created");
+            addFamily(fam);
             currentFam = id;
         }
     }
@@ -229,30 +255,28 @@ public class GEDParser {
     // BELOW: Functions to fill in information about individuals given in level 1 tags
 
     // Fill in the name of an individual
-    public static void NameIndividual(String name) {
+    public static void nameIndividual(String name) {
         // Iterate through individuals looking for the current one
         for (int i = 0; i < 5000; i++) {
             if (individuals[i][0] == currentInd) {
                 individuals[i][1] = name;
-                // System.out.println("Individual " + id + " is named " + name);
                 return;
             }
         }
     }
 
-    public static void AssignSexToIndividual(String sex) {
+    public static void assignSexToIndividual(String sex) {
         // Iterate through individuals looking for the current one
         for (int i = 0; i < 5000; i++) {
             if (individuals[i][0] == currentInd) {
                 individuals[i][2] = sex;
-                // System.out.println("Individual " + id + " is of sex " + sex);
                 return;
             }
         }
     }
 
     // Add a date to the proper field
-    public static void AddDate(String date) {
+    public static void addDate(String date) {
         // Iterate through individuals and families looking for the current one
         int placeOfInd = 0;
         for (int i = 0; i < 5000; i++) {
@@ -279,16 +303,37 @@ public class GEDParser {
         }
     }
 
-    // Go through all individuals and apply all individual-level user stories to them
-    public static void checkIndividuals() {
+    // Add individual to individuals
+    public static void addIndividual(String[] individual) {
+        // Iterate over all individuals to find first empty individual 
         for (int i = 0; i < individuals.length; i++) {
-            if (!LessThan150.checkLessThan150(individuals[i])) {
-                System.out.println("ERROR: Individual " + individuals[i][0] + " is more than 150 years old!");
+            if (individuals[i] == null) {
+                individuals[i] = individual;
+                break;
             }
         }
     }
 
-    
+    // Add family to families
+    public static void addFamily(String[] family) {
+        // Iterate over all families to find first empty family
+        for (int i = 0; i < families.length; i++) {
+            if (families[i] == null) {
+                families[i] = family;
+                break;
+            }
+        }
+    }
+
+    // Go through all individuals and apply all individual-level user stories to them
+    public static void checkIndividuals() {
+        for (int i = 0; i < individuals.length; i++) {
+            // if (!LessThan150.checkLessThan150(individuals[i])) {
+                // System.out.println("ERROR: Individual " + individuals[i][0] + " is more than 150 years old!");
+            // }
+        }
+    }
+
     // Go through all families and apply all family-level user stories to them
     public static void checkFamilies() {
         for (int i = 0; i < families.length; i++) {
@@ -301,12 +346,15 @@ public class GEDParser {
         }
     }
 
-    public static void PrintTable(){
+    public static void printTable(){
         //Simple implementation
         System.out.println(" Individuals\n ID Name Gender Birthday Age Alive Death Children Spouse");
         //Iterate through individuals
-        for (int i = 0; i < 10; i++){
+        for (int i = 0; i < individuals.length; i++){
             //Iterate through each individual 
+            if (individuals[i] == null) {
+                return;
+            }
 
             String indPrint = "";
 
@@ -320,8 +368,11 @@ public class GEDParser {
 
         System.out.println(" Families\n ID Married Divorced HusbandID HusbandName WifeID WifeName Children");
         //Iterate through individuals
-        for (int i = 0; i < 10; i++){
+        for (int i = 0; i < families.length; i++){
             //Iterate through each individual 
+            if (families[i] == null) {
+                return;
+            }
             String famPrint = "";
 
             for (int j = 0; j < 8; j++){
