@@ -1,6 +1,6 @@
 // Current issues: \n characters are messing up equality statements
 /*  TODOs:
-    Add functionality in level1() to HUSB, WIFE, CHIL
+    Add functionality in level1() to HUSB, WIFE
     Test functions
      */
 
@@ -175,10 +175,10 @@ public class GEDParser {
                 waitingEvent = "marriage";
             } else if (tag == "HUSB") {
                 // Add the specified individual to the current family as the husband
-
+                addHusband(words[2]);
             } else if (tag == "WIFE") {
                 // Add the specified individual to the current family as the wife
-
+                addWife(words[2]);
             } else if (tag == "CHIL") {
                 // Add the specified individual to the current family as a child
                 addChild(words[2]);
@@ -349,16 +349,51 @@ public class GEDParser {
         }
     }
 
+    // Add the id of a child to the current family
     public static void addChild(String childId) {
          // Find current family
          for (int i = 0; i < families.length; i++) {
-            if (families[i][0].equals(currentFam);
+            if (families[i][0].equals(currentFam)) {
                 // Family found, see if children are empty (first child has different formatting)
                 if (families[i][7].equals("NA")) {
                     families[i][7] = currentInd;
                 } else {
                     families[i][7] += (", " + currentInd);
                 }
+            }
+        }
+    }
+
+    // Add the id of the husband to the current family
+    public static void addHusband(String husbandID) {
+        // Find current family
+        for (int i = 0; i < families.length; i++) {
+            if (families[i][0].equals(currentFam)) {
+                // Family found, add husband's id
+                families[i][3] = husbandID;
+                // Now, we find the husbad's name and add that
+                for (int j = 0; j < individuals.length; j++) {
+                    if (individuals[i][0].equals(husbandID)) {
+                        families[i][4] = individuals[j][1];
+                    }
+                } 
+            }
+        }
+    }
+
+    // Add the id of the wife to the current family
+    public static void addWife(String wifeID) {
+        // Find current family
+        for (int i = 0; i < families.length; i++) {
+            if (families[i][0].equals(currentFam)) {
+                // Family found, add wife's id
+                families[i][5] = wifeID;
+                // Now, we find the husbad's name and add that
+                for (int j = 0; j < individuals.length; j++) {
+                    if (individuals[i][0].equals(wifeID)) {
+                        families[i][6] = individuals[j][1];
+                    }
+                } 
             }
         }
     }
