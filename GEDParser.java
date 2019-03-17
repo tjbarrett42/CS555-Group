@@ -159,6 +159,7 @@ public class GEDParser {
                 // WaitForBirthdate(currentInd);
             } else if (tag == "DEAT") {
                 // Set the next event for a date to death
+                killIndividual();
                 waitingEvent = "death";
             } else if (tag == "FAMC") {
                 // Update the current individual's "child in family" field
@@ -390,6 +391,16 @@ public class GEDParser {
                         families[i][6] = individuals[j][1];
                     }
                 } 
+            }
+        }
+    }
+
+    // Change an indiviual's alive status to be dead
+    public static void killIndividual() {
+        // Find current individual
+        for (int i = 0; i < individuals.length; i++) {
+            if (individuals[i][0].equals(currentInd)) {
+                individuals[i][5] = "Dead";
             }
         }
     }
