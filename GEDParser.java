@@ -11,6 +11,9 @@ public class GEDParser {
     private static MarriageBeforeDeath MarriageBeforeDeath;
     private static MarriageBeforeDivorce MarriageBeforeDivorce;
     private static LessThan150 LessThan150;
+    private static DivorceBeforeDeath DivorceBeforeDeath;
+    private static UniqueIDs UniqueIDs;
+    private static UniqueNameAndBirthDate UniqueNameAndBirthDate;
 
     static String[] zero_tags = {
         "HEAD",
@@ -409,8 +412,10 @@ public class GEDParser {
     public static void checkIndividuals() {
         for (int i = 0; i < individuals.length; i++) {
             // if (!LessThan150.checkLessThan150(individuals[i])) {
-                // System.out.println("ERROR: Individual " + individuals[i][0] + " is more than 150 years old!");
+            //     System.out.println("ERROR: Individual " + individuals[i][0] + " is more than 150 years old!");
             // }
+            UniqueIDs.checkUniqueIDs(individuals[I]); // No print statement needed, handles them itself
+            UniqueNameAndBirthDate.checkUniqueNameAndBirthDate(individuals[i]); // No print statement needed, handles them itself
         }
     }
 
@@ -418,10 +423,13 @@ public class GEDParser {
     public static void checkFamilies() {
         for (int i = 0; i < families.length; i++) {
             if (!MarriageBeforeDeath.checkMarriageBeforeDeath(families[i])) {
-                System.out.println("ERROR: Family " + families[i][0] + " was married after the death of a spouse!");
+                System.out.println("ERROR: Family " + families[i][0] + " were married after the death of a spouse!");
             }
             if (!MarriageBeforeDivorce.checkMarriageBeforeDivorce(families[i])) {
-                System.out.println("ERROR: Family " + families[i][0] + " was divorced before they were married!");
+                System.out.println("ERROR: Family " + families[i][0] + " were divorced before they were married!");
+            }
+            if (!DivorceBeforeDeath.checkDivorceBeforeDeath(families[i])) {
+                System.out.println("ERROR: Family " + families[i][0] + " were divorced after the death of a spouse!");
             }
         }
     }
