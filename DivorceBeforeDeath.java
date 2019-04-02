@@ -56,7 +56,7 @@ public class DivorceBeforeDeath {
 		}
 	}
 
-	public static boolean checkMarriageBeforeDeath(String[] family) {
+	public static boolean checkDivorceBeforeDeath(String[] family) {
 		int indexOfHusband = -1;
 		int indexOfWife = -1;
 		// Check divorce details
@@ -82,7 +82,7 @@ public class DivorceBeforeDeath {
 		if (indexOfHusband != -1 && individuals[indexOfHusband][6] == "NA") {
 			// Not dead, that's ok
 		} else if (indexOfHusband != -1) {
-			// Husband is dead, check if it's before marriage
+			// Husband is dead, check if it's before divorce
 			if (!isBefore(family[2], individuals[indexOfHusband][6]))
 				return false;
 		}
@@ -92,7 +92,7 @@ public class DivorceBeforeDeath {
 			// Not dead, that's ok
 			return true;
 		} else if (indexOfWife != -1) {
-			// Wife is dead, check if it's before marriage
+			// Wife is dead, check if it's before divorce
 			return isBefore(family[2], individuals[indexOfWife][6]);
 		}
 		return true;
