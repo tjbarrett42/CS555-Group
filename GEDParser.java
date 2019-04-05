@@ -1,6 +1,8 @@
 // Dylan DiGeronimo, Tim Barrett, Somya Gambhir
 
-import java.io.*; 
+import com.jakewharton.fliptables.FlipTable;
+
+import java.io.*;
 import java.util.Arrays;
 import java.lang.*;
 // import java.util.ArrayList;
@@ -14,6 +16,9 @@ public class GEDParser {
     private static DivorceBeforeDeath DivorceBeforeDeath;
     private static UniqueIDs UniqueIDs;
     private static UniqueNameAndBirthDate UniqueNameAndBirthDate;
+    private static us24 us24;
+    private static RejectIllDates RejectIllDates;
+    private static BirthBeforeDeath us03;
 
     static String[] zero_tags = {
         "HEAD",
@@ -58,6 +63,9 @@ public class GEDParser {
     static String currentInd = "";
     static String currentFam = "";
     static String waitingEvent = ""; // This string holds either birth, death, marriage, or divorce. We use it to know what to do when we come across a date tag
+    static int indcounter = 0;
+    static int famcounter = 0;
+    static String DATE = "2019-04-05";
 
     public static void main(String[] args)throws Exception { 
         // Check for proper command line args
@@ -82,7 +90,7 @@ public class GEDParser {
         }
 
         // https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
-        File file = new File(args[0]); 
+        File file = new File(args[0]);
         if (!file.exists()) {
             System.out.println("ERROR: GEDCOM file does not exist!");
             System.exit(1);
@@ -98,7 +106,7 @@ public class GEDParser {
             for(int i = 0; i < splitStr.length; i++) {
                 splitStr[i] = splitStr[i].trim();
             }
-
+            //System.out.println(str);
             int currLevel = Integer.valueOf(splitStr[0]);
 
             //Check which level and use appropriate method
@@ -113,11 +121,24 @@ public class GEDParser {
             }
         }
         br.close();
-        
+
+        for(String[] fam:families){
+            fam[7] += "}";
+        }
+
+        for(String[] ind:individuals){
+            if(ind[8]!="NA")
+                ind[8] += "}";
+            if(ind[7]!="NA")
+                ind[7] += "}";
+        }
+
+        calcAge();
+
+        printTable();
+
         checkIndividuals();
         checkFamilies();
-        
-        printTable();
     }
 
     public static void level0(String str){
@@ -144,45 +165,45 @@ public class GEDParser {
     }
 
     public static void level1(String str){
-        String[] words = str.split(" ");
+        String[] words = str.split(" ",3);
 
         String tag = words[1];
         boolean isOneTag = Arrays.stream(one_tags).anyMatch(tag::equals);
         
         if (isOneTag) {
-            if (tag == "NAME") {
+            if (tag.equals("NAME")) {
                 // Place the individual's name in the records
                 nameIndividual(words[2]);
-            } else if (tag == "SEX") {
+            } else if (tag.equals("SEX")) {
                 // Place the individual's sex in the records
                 assignSexToIndividual(words[2]);
-            } else if (tag == "BIRT") {
+            } else if (tag.equals("BIRT")) {
                 // Set the next event for a date to birth
                 waitingEvent = "birth";
                 // WaitForBirthdate(currentInd);
-            } else if (tag == "DEAT") {
+            } else if (tag.equals("DEAT")) {
                 // Set the next event for a date to death
                 killIndividual();
                 waitingEvent = "death";
-            } else if (tag == "FAMC") {
+            } else if (tag.equals("FAMC")) {
                 // Update the current individual's "child in family" field
                 updateChild(words[2]);
-            } else if (tag == "FAMS") {
+            } else if (tag.equals("FAMS")) {
                 // Update the current individual's "spouse in family" field
                 updateSpouse(words[2]);
-            } else if (tag == "MARR") {
+            } else if (tag.equals("MARR")) {
                 // Set the next event for a date to marriage
                 waitingEvent = "marriage";
-            } else if (tag == "HUSB") {
+            } else if (tag.equals("HUSB")) {
                 // Add the specified individual to the current family as the husband
                 addHusband(words[2]);
-            } else if (tag == "WIFE") {
+            } else if (tag.equals("WIFE")) {
                 // Add the specified individual to the current family as the wife
                 addWife(words[2]);
-            } else if (tag == "CHIL") {
+            } else if (tag.equals("CHIL")) {
                 // Add the specified individual to the current family as a child
                 addChild(words[2]);
-            } else if (tag == "DIV") {
+            } else if (tag.equals("DIV")) {
                 // Set the next event for a date to divorce          
                 waitingEvent = "divorce";  
             } else {
@@ -200,25 +221,26 @@ public class GEDParser {
             // The tag can only be date
             // Convert month to number 
             String monthWord = words[3];
+            String day;
             String month = "0";
             if (monthWord.equals("JAN")) {
-                month = "1";
+                month = "01";
             } else if (monthWord.equals("FEB")) {
-                month = "2";
+                month = "02";
             } else if (monthWord.equals("MAR")) {
-                month = "3";
+                month = "03";
             } else if (monthWord.equals("APR")) {
-                month = "4";
+                month = "04";
             } else if (monthWord.equals("MAY")) {
-                month = "5";
+                month = "05";
             } else if (monthWord.equals("JUN")) {
-                month = "6";
+                month = "06";
             } else if (monthWord.equals("JUL")) {
-                month = "7";
+                month = "07";
             } else if (monthWord.equals("AUG")) {
-                month = "8";
+                month = "08";
             } else if (monthWord.equals("SEP")) {
-                month = "9";
+                month = "09";
             } else if (monthWord.equals("OCT")) {
                 month = "10";
             } else if (monthWord.equals("NOV")) {
@@ -226,10 +248,15 @@ public class GEDParser {
             } else if (monthWord.equals("DEC")) {
                 month = "12";
             }
-            String day = words[2];
+            //Make sure day formmating is correct for numbers below 10
+            if(words[2].length() ==1){
+                day = "0"+words[2];}
+            else{
+                day = words[2];}
             String year = words[4];
-            String date = month + "-" + day + "-" + year;
+            String date = year + "-" + month + "-" + day;
             addDate(date);
+
         }   
     }
 
@@ -237,19 +264,56 @@ public class GEDParser {
         // Skip the current line, it's invalid for sure
         return;
     }
+    //TODO implement Age
+    public static void calcAge(){
+        for (int i = 0; i < indcounter; i++) {
+
+            String by = individuals[i][3].split("-")[0];
+            String bm = individuals[i][3].split("-")[1];
+            String bd = individuals[i][3].split("-")[2];
+            String death = DATE;
+            String dy,dm,dd;
+            int age;
+            if(individuals[i][6] == "NA"){
+                dy = death.split("-")[0];
+                dm = death.split("-")[1];
+                dd = death.split("-")[2];
+            }
+            else {
+                dy = individuals[i][6].split("-")[0];
+                dm = individuals[i][6].split("-")[1];
+                dd = individuals[i][6].split("-")[2];
+            }
+            age = Integer.parseInt(dy) - Integer.parseInt(by);
+            if(Integer.parseInt(by) < Integer.parseInt(dy)){
+                if(Integer.parseInt(bm) < Integer.parseInt(dm)){
+                    age++;
+                }else if(Integer.parseInt(bm) == Integer.parseInt(dm)){
+                    if(Integer.parseInt(bd) < Integer.parseInt(dd)){
+                        age++;
+                    }
+                }
+            }
+            else{
+                age = 0;
+            }
+
+            individuals[i][4] = Integer.toString(age);
+        }
+    }
 
     // create a new individual or family
     public static void create(String tag, String id) {
         // System.out.println(tag);
-        if (tag == "INDI") {
+        if (tag.equals("INDI")) {
             // create new indiviual
-            String[] indi = {id, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA"};
+            String[] indi = {id, "NA", "NA", "NA", "NA", "Alive", "NA", "NA", "NA"};
             // System.out.println("Individual " + id + " created");
             addIndividual(indi);
             currentInd = id;
-        } else if (tag == "FAM") {
+        } else if (tag.equals("FAM")) {
             // create new family
-            String[] fam = {id, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA"};
+            String[] fam = {id, "NA", "NA", "NA", "NA", "NA", "NA", "NA"};
             // System.out.println("Family " + id + " created");
             addFamily(fam);
             currentFam = id;
@@ -311,8 +375,10 @@ public class GEDParser {
     public static void addIndividual(String[] individual) {
         // Iterate over all individuals to find first empty individual 
         for (int i = 0; i < individuals.length; i++) {
-            if (individuals[i] == null) {
+
+            if (individuals[i][0] == null) {
                 individuals[i] = individual;
+                indcounter++;
                 break;
             }
         }
@@ -322,8 +388,9 @@ public class GEDParser {
     public static void addFamily(String[] family) {
         // Iterate over all families to find first empty family
         for (int i = 0; i < families.length; i++) {
-            if (families[i] == null) {
+            if (families[i][0] == null) {
                 families[i] = family;
+                famcounter++;
                 break;
             }
         }
@@ -334,7 +401,11 @@ public class GEDParser {
         // Find current individual and update child to add the family id
         for (int i = 0; i < individuals.length; i++) {
             if (individuals[i][0].equals(currentInd)) {
-                individuals[i][7] = famID;
+                if(individuals[i][7].equals("NA"))
+                    individuals[i][7] =  "{'" +famID+ "'";
+                else
+                    individuals[i][7] +=  "'" +famID+ "'";
+                break;
             }
         }
     }
@@ -344,7 +415,11 @@ public class GEDParser {
         // Find current individual
         for (int i = 0; i < individuals.length; i++) {
             if (individuals[i][0].equals(currentInd)) {
-                individuals[i][8].equals(famID);
+                if(individuals[i][8].equals("NA"))
+                    individuals[i][8] =  "{'" +famID+ "'";
+                else
+                    individuals[i][8] +=  ", '" +famID+ "'";
+                break;
             }
         }
     }
@@ -356,11 +431,12 @@ public class GEDParser {
             if (families[i][0].equals(currentFam)) {
                 // Family found, see if children are empty (first child has different formatting)
                 if (families[i][7].equals("NA")) {
-                    families[i][7] = currentInd;
+                    families[i][7] = "{'"+currentInd+"'";
                 } else {
-                    families[i][7] += (", " + currentInd);
+                    families[i][7] += (", " + "'"+currentInd+"'");
                 }
             }
+            break;
         }
     }
 
@@ -373,10 +449,13 @@ public class GEDParser {
                 families[i][3] = husbandID;
                 // Now, we find the husbad's name and add that
                 for (int j = 0; j < individuals.length; j++) {
-                    if (individuals[i][0].equals(husbandID)) {
+                    if (individuals[j][0].equals(husbandID)) {
                         families[i][4] = individuals[j][1];
+                        break;
+
                     }
-                } 
+                }
+                break;
             }
         }
     }
@@ -390,11 +469,13 @@ public class GEDParser {
                 families[i][5] = wifeID;
                 // Now, we find the husbad's name and add that
                 for (int j = 0; j < individuals.length; j++) {
-                    if (individuals[i][0].equals(wifeID)) {
+                    if (individuals[j][0].equals(wifeID)) {
                         families[i][6] = individuals[j][1];
+                        break;
                     }
                 } 
             }
+            break;
         }
     }
 
@@ -404,27 +485,31 @@ public class GEDParser {
         for (int i = 0; i < individuals.length; i++) {
             if (individuals[i][0].equals(currentInd)) {
                 individuals[i][5] = "Dead";
+                break;
             }
         }
     }
 
     // Go through all individuals and apply all individual-level user stories to them
     public static void checkIndividuals() {
-        for (int i = 0; i < individuals.length; i++) {
+        for (int i = 0; i < indcounter; i++) {
             // if (!LessThan150.checkLessThan150(individuals[i])) {
             //     System.out.println("ERROR: Individual " + individuals[i][0] + " is more than 150 years old!");
             // }
-            UniqueIDs.checkUniqueIDs(individuals[I]); // No print statement needed, handles them itself
-            UniqueNameAndBirthDate.checkUniqueNameAndBirthDate(individuals[i]); // No print statement needed, handles them itself
+           // UniqueIDs.checkUniqueIDs(individuals[i]); // No print statement needed, handles them itself
+            //UniqueNameAndBirthDate.checkUniqueNameAndBirthDate(individuals[i]); // No print statement needed, handles them itself
+            if(!us03.CheckUS03(individuals[i])){
+                System.out.println("ERROR: INDIVIDUAL: US03: " + individuals[i][0] + " cannot be born after death!");
+            }
         }
     }
 
     // Go through all families and apply all family-level user stories to them
     public static void checkFamilies() {
         for (int i = 0; i < families.length; i++) {
-            if (!MarriageBeforeDeath.checkMarriageBeforeDeath(families[i])) {
-                System.out.println("ERROR: Family " + families[i][0] + " were married after the death of a spouse!");
-            }
+         //   if (!MarriageBeforeDeath.checkMarriageBeforeDeath(families[i])) {
+           //     System.out.println("ERROR: Family " + families[i][0] + " were married after the death of a spouse!");
+            //}
             if (!MarriageBeforeDivorce.checkMarriageBeforeDivorce(families[i])) {
                 System.out.println("ERROR: Family " + families[i][0] + " were divorced before they were married!");
             }
@@ -435,40 +520,25 @@ public class GEDParser {
     }
 
     public static void printTable(){
-        //Simple implementation
-        System.out.println(" Individuals\n ID Name Gender Birthday Age Alive Death Children Spouse");
-        //Iterate through individuals
-        for (int i = 0; i < individuals.length; i++){
-            //Iterate through each individual 
-            if (individuals[i] == null) {
-                return;
-            }
+        //Use Fliptables lib to print out tables similar to prettytables module in Python
+        String[] indheaders = {"ID","Name","Gender","Birthday","Age","Alive","Death","Child","Spouse"};
+        String[] famheaders = {"ID","Married","Divorced","Husband ID","Husband Name","Wife ID","Wife Name","Children"};
 
-            String indPrint = "";
+        //Create new arrays with no null values
+        String[][] prntind = new String[indcounter][9];
+        String[][] prntfam = new String[famcounter][9];
 
-            for (int j = 0; j < 9; j++){
-                indPrint = indPrint + " " + individuals[i][j];
-            }
-
-            System.out.println(indPrint);
-            
+        for(int i=0;i<indcounter;i++){
+            prntind[i] = individuals[i];
+        }
+        for(int i=0;i<famcounter;i++){
+            prntfam[i] = families[i];
         }
 
-        System.out.println(" Families\n ID Married Divorced HusbandID HusbandName WifeID WifeName Children");
-        //Iterate through individuals
-        for (int i = 0; i < families.length; i++){
-            //Iterate through each individual 
-            if (families[i] == null) {
-                return;
-            }
-            String famPrint = "";
+        System.out.println("Individuals:");
+        System.out.println(FlipTable.of(indheaders, prntind));
+        System.out.println("Families:");
+        System.out.println(FlipTable.of(famheaders,prntfam));
 
-            for (int j = 0; j < 8; j++){
-                famPrint = famPrint + " " + families[i][j];
-            }
-
-            System.out.println(famPrint);
-            
-        }
     }
 }

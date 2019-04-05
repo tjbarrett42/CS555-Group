@@ -11,17 +11,17 @@ public class BirthBeforeDeath extends GEDParser{
         else{
             String[] birth = individuals[3].split("-");
             String[] death = individuals[6].split("-");
-            if(Integer.parseInt(birth[2]) < Integer.parseInt(death[2])){
-                return true;
+            if(Integer.parseInt(birth[0]) > Integer.parseInt(death[0])){
+                return false;
             }
-            else if(Integer.parseInt(birth[0]) < Integer.parseInt(death[0])){
-                return true;
+            else if(Integer.parseInt(birth[1]) > Integer.parseInt(death[1])){
+                return false;
             }
-            else if(Integer.parseInt(birth[1]) <= Integer.parseInt(death[1])) {
-                return true;
+            else if(Integer.parseInt(birth[2]) >= Integer.parseInt(death[2])) {
+                return false;
             }
             else{
-                return false;
+                return true;
             }
         }
     }
