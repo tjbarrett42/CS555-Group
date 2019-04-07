@@ -3,17 +3,6 @@
 
 public class DivorceBeforeDeath {
 
-	static String[][] individuals = { { "1", "Tim", "NA", "01-01-1900", "NA", "NA", "NA", "NA", "NA" },
-			{ "2", "Timantha", "NA", "01-01-1900", "NA", "NA", "NA", "NA", "NA" },
-			{ "3", "Joe", "NA", "01-01-1900", "NA", "NA", "03-15-1946", "NA", "NA" },
-			{ "4", "Jane", "NA", "01-01-1900", "NA", "NA", "NA", "NA", "NA" },
-			{ "5", "Mike", "NA", "01-01-1900", "NA", "NA", "01-01-1920", "NA", "NA" },
-			{ "6", "Michelle", "NA", "01-01-1915", "NA", "NA", "01-01-1940", "NA", "NA" },
-			{ "7", "Fred", "NA", "01-01-1915", "NA", "NA", "07-04-1990", "NA", "NA" },
-			{ "8", "Freeda", "NA", "01-01-1915", "NA", "NA", "07-04-1970", "NA", "NA" },
-			{ "9", "Somya", "NA", "01-01-1900", "NA", "NA", "NA", "NA", "NA" },
-			{ "10", "Somyee", "NA", "02-01-1910", "NA", "NA", "NA", "NA", "NA" } };
-
 	// Returns false if the first date string is later than the second date string
 	public static boolean isBefore(String dateString1, String dateString2) {
 		// Split date strings into arrays

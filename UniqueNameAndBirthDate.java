@@ -12,7 +12,6 @@ public class UniqueNameAndBirthDate {
 					// Name is the same, now check birthday
 					if (individuals[i][3] == individuals[j][3]) {
 						// Birthday is the same
-						System.out.println("ERROR: Individuals w/ IDs " + individuals[i][0] + " and " + individuals[j][0] + " share a name and birth date (" + individuals[i][1] + ", " + individuals[i][3] + ")!");
 						return false;
 					}
 				}

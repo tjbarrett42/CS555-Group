@@ -9,13 +9,13 @@ import java.lang.*;
 
 public class GEDParser {   
 
-    // import other user stories as objects
-    private static MarriageBeforeDeath MarriageBeforeDeath;
-    private static MarriageBeforeDivorce MarriageBeforeDivorce;
-    private static LessThan150 LessThan150;
-    private static DivorceBeforeDeath DivorceBeforeDeath;
-    private static UniqueIDs UniqueIDs;
-    private static UniqueNameAndBirthDate UniqueNameAndBirthDate;
+    // import other user stories as objects 
+    private static MarriageBeforeDeath MarriageBeforeDeath; // DD
+    private static MarriageBeforeDivorce MarriageBeforeDivorce; // DD
+    private static LessThan150 LessThan150; // DD
+    private static DivorceBeforeDeath DivorceBeforeDeath; // DD
+    private static UniqueIDs UniqueIDs; // DD
+    private static UniqueNameAndBirthDate UniqueNameAndBirthDate; // DD
     private static us24 us24;
     private static RejectIllDates RejectIllDates;
     private static BirthBeforeDeath us03;
@@ -493,13 +493,17 @@ public class GEDParser {
     // Go through all individuals and apply all individual-level user stories to them
     public static void checkIndividuals() {
         for (int i = 0; i < indcounter; i++) {
-            // if (!LessThan150.checkLessThan150(individuals[i])) {
-            //     System.out.println("ERROR: Individual " + individuals[i][0] + " is more than 150 years old!");
-            // }
-           // UniqueIDs.checkUniqueIDs(individuals[i]); // No print statement needed, handles them itself
-            //UniqueNameAndBirthDate.checkUniqueNameAndBirthDate(individuals[i]); // No print statement needed, handles them itself
+            if (!LessThan150.checkLessThan150(individuals[i])) {
+                System.out.println("ERROR: Individual " + individuals[i][0] + " is more than 150 years old!");
+            }
+            if (!UniqueIDs.checkUniqueIDs(individuals)) {
+				System.out.println("ERROR: ID " + individuals[i][0] + " is used for multiple individuals (" + individuals[i][1] + " and " + individuals[j][1] + ")!");
+            }
+            if (!UniqueNameAndBirthDate.checkUniqueNameAndBirthDate(individuals)) {
+				System.out.println("ERROR: Individuals w/ IDs " + individuals[i][0] + " and " + individuals[j][0] + " share a name and birth date (" + individuals[i][1] + ", " + individuals[i][3] + ")!");
+            }
             if(!us03.CheckUS03(individuals[i])){
-                System.out.println("ERROR: INDIVIDUAL: US03: " + individuals[i][0] + " cannot be born after death!");
+                System.out.println("ERROR: Individual: US03: " + individuals[i][0] + " cannot be born after death!");
             }
         }
     }
@@ -507,9 +511,9 @@ public class GEDParser {
     // Go through all families and apply all family-level user stories to them
     public static void checkFamilies() {
         for (int i = 0; i < families.length; i++) {
-         //   if (!MarriageBeforeDeath.checkMarriageBeforeDeath(families[i])) {
-           //     System.out.println("ERROR: Family " + families[i][0] + " were married after the death of a spouse!");
-            //}
+           if (!MarriageBeforeDeath.checkMarriageBeforeDeath(families[i])) {
+               System.out.println("ERROR: Family " + families[i][0] + " were married after the death of a spouse!");
+            }
             if (!MarriageBeforeDivorce.checkMarriageBeforeDivorce(families[i])) {
                 System.out.println("ERROR: Family " + families[i][0] + " were divorced before they were married!");
             }
