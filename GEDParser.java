@@ -17,6 +17,7 @@ public class GEDParser {
     private static UniqueIDs UniqueIDs; // DD
     private static UniqueNameAndBirthDate UniqueNameAndBirthDate; // DD
     private static CorrectGender CorrectGender; // DD
+    private static SiblingMarriage SiblingMarriage; // DD
     private static us24 us24;
     private static RejectIllDates RejectIllDates;
     private static BirthBeforeDeath us03;
@@ -524,6 +525,7 @@ public class GEDParser {
         UniqueIDs.checkUniqueIDs(individuals);
         UniqueNameAndBirthDate.checkUniqueNameAndBirthDate(individuals);
         CorrectGender.checkCorrectGender(families, individuals);
+        SiblingMarriage.checkSiblingMarriage(families, individuals);
     }
 
     public static void printTable(){
