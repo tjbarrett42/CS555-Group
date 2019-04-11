@@ -16,6 +16,7 @@ public class GEDParser {
     private static DivorceBeforeDeath DivorceBeforeDeath; // DD
     private static UniqueIDs UniqueIDs; // DD
     private static UniqueNameAndBirthDate UniqueNameAndBirthDate; // DD
+    private static CorrectGender CorrectGender; // DD
     private static us24 us24;
     private static RejectIllDates RejectIllDates;
     private static BirthBeforeDeath us03;
@@ -496,12 +497,6 @@ public class GEDParser {
             if (!LessThan150.checkLessThan150(individuals[i])) {
                 System.out.println("ERROR: Individual " + individuals[i][0] + " is more than 150 years old!");
             }
-            if (!UniqueIDs.checkUniqueIDs(individuals)) {
-				System.out.println("ERROR: ID " + individuals[i][0] + " is used for multiple individuals (" + individuals[i][1] + " and " + individuals[j][1] + ")!");
-            }
-            if (!UniqueNameAndBirthDate.checkUniqueNameAndBirthDate(individuals)) {
-				System.out.println("ERROR: Individuals w/ IDs " + individuals[i][0] + " and " + individuals[j][0] + " share a name and birth date (" + individuals[i][1] + ", " + individuals[i][3] + ")!");
-            }
             if(!us03.CheckUS03(individuals[i])){
                 System.out.println("ERROR: Individual: US03: " + individuals[i][0] + " cannot be born after death!");
             }
@@ -521,6 +516,14 @@ public class GEDParser {
                 System.out.println("ERROR: Family " + families[i][0] + " were divorced after the death of a spouse!");
             }
         }
+    }
+
+    // Apply all user stories that do not require a loop
+    public static void checkNoLoop() {
+        // Print statements for these functions are handled within them
+        UniqueIDs.checkUniqueIDs(individuals);
+        UniqueNameAndBirthDate.checkUniqueNameAndBirthDate(individuals);
+        CorrectGender.checkCorrectGender(families, individuals);
     }
 
     public static void printTable(){

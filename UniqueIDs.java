@@ -9,6 +9,7 @@ public class UniqueIDs {
 		for (int i = 0; i < individuals.length-1; i++) {
 			for (int j = i+1; j < individuals.length; j++) {
 				if (individuals[i][0] == individuals[j][0]) {
+					System.out.println("ERROR: ID " + individuals[i][0] + " was used for multiple people!");
 					return false;
 				}
 			}
