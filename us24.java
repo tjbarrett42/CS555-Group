@@ -1,7 +1,12 @@
+//Somya Gambhir
 public class us24 {
 
-    public static boolean us24(String[][] individuals, String[][] families){
+    public static boolean us24(String[][] families){
         boolean tag = true;
+
+        if(families.length==1){
+            return true;
+        }
 
         for(String[] fam: families){
             for(String[] fam2: families){
